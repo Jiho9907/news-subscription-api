@@ -1,4 +1,4 @@
-package com.example.news_subscription_api;
+package com.cjh.news_subscription_api;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
