@@ -40,6 +40,8 @@ dependencies {
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.5' // Jwts.builder(), Jwts.parserBuilder() 등 API 제공
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5' // HS256, RS256 등 서명 알고리즘 구현체 포함
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5' // JSON 처리를 위한 Jackson 통합
+
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis' // redis 
 }
 
 tasks.named('test') {
