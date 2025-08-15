@@ -14,8 +14,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 //@RequiredArgsConstructor
 public class SecurityConfig {
+
+    /**
+     * 비밀번호 암호화를 위한 Bean
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(); // (스프링 시큐리티 제공) 비밀번호를 암호화(해싱)하는 클래스 - BCrypt 해시 함수를 이용
     }
 }
