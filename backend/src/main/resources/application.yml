@@ -2,9 +2,20 @@
 # 📂 application.yml - 스프링 부트 핵심 설정 모음
 # ============================================================
 
+
+# 📋 로깅 설정
+logging:
+  pattern:
+    # 🎨 컬러 로깅 패턴: 로그 레벨, 쓰레드, 로거명, 메시지 등 포함
+    console: |
+      ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
+
+  level:
+    org.hibernate.SQL: debug                # 🔍 SQL 로그 출력
+    org.hibernate.orm.jdbc.bind: trace      # 🧷 SQL 바인딩 파라미터 추적
+    com.cjh.news_subscription_api: debug               # 📦 프로젝트 전체 디버깅 레벨 설정
+
 spring:
-  profiles:
-    active: dev # 실행 환경 프로파일 설정 (VM 옵션 대체용)
   application:
     name: news-subscription-api
   datasource:
@@ -26,18 +37,10 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expiration: ${JWT_ACCESS_TOKEN_EXPIRATION}
+  refresh-token-expiration: ${JWT_REFRESH_TOKEN_EXPIRATION}
 
 server:
   port: 8080
-
-# 로깅 설정
-logging:
-  pattern:
-    # 컬러 로깅 패턴: 로그 레벨, 쓰레드, 로거명, 메시지 등 포함
-    console: |
-      ${LOGPATTERN_CONSOLE:%green(%d{HH:mm:ss.SSS}) %blue(%-5level) %red([%thread]) %yellow(%logger{15}) - %msg%n}
-
-  level:
-    org.hibernate.SQL: debug                # SQL 로그 출력
-    org.hibernate.orm.jdbc.bind: trace      # SQL 바인딩 파라미터 추적
-    com.heaildairy.www: debug               # 프로젝트 전체 디버깅 레벨 설정
