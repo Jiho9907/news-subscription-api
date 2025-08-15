@@ -1,5 +1,7 @@
 package com.cjh.news_subscription_api.auth.controller;
 
+import com.cjh.news_subscription_api.auth.dto.LoginRequestDto;
+import com.cjh.news_subscription_api.auth.dto.LoginResponseDto;
 import com.cjh.news_subscription_api.auth.dto.SignUpRequestDto;
 import com.cjh.news_subscription_api.auth.service.AuthService;
 import com.cjh.news_subscription_api.common.response.ApiResponse;
@@ -24,5 +26,13 @@ public class AuthController {
     public ResponseEntity<ApiResponse<String>> signup(@Valid @RequestBody SignUpRequestDto requestDto) {
         authService.signup(requestDto);
         return ResponseEntity.ok(ApiResponse.success("회원가입이 완료되었습니다."));
+    }
+    /**
+     * 로그인 요청 처리
+     */
+    @PostMapping("/login")
+    public ResponseEntity<ApiResponse<LoginResponseDto>> login(@Valid @RequestBody LoginRequestDto requestDto) {
+        LoginResponseDto responseDto = authService.login(requestDto);
+        return ResponseEntity.ok(ApiResponse.success(responseDto));
     }
 }
