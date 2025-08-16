@@ -106,4 +106,14 @@ public class AuthService {
         // 7. 반환
         return new RefreshTokenResponseDto(newAccessToken, newRefreshToken);
     }
+
+    /**
+     * 로그아웃 로직
+     * @param user
+     */
+    @Transactional
+    public void logout(User user) {
+        //Redis에서 삭제
+        refreshTokenService.delete(user.getId());
+    }
 }

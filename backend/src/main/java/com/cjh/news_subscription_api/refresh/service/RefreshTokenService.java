@@ -34,4 +34,8 @@ public class RefreshTokenService {
                 .map(RefreshToken::getToken) // 존재하면 getToken() 호출
                 .orElse(null); // 없으면 null 반환
     }
+
+    public void delete(Long userId) {
+        refreshTokenRepository.deleteById(userId);
+    }
 }
