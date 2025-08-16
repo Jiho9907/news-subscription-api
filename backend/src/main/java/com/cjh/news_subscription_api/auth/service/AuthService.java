@@ -1,8 +1,6 @@
 package com.cjh.news_subscription_api.auth.service;
 
-import com.cjh.news_subscription_api.auth.dto.LoginRequestDto;
-import com.cjh.news_subscription_api.auth.dto.LoginResponseDto;
-import com.cjh.news_subscription_api.auth.dto.SignUpRequestDto;
+import com.cjh.news_subscription_api.auth.dto.*;
 import com.cjh.news_subscription_api.auth.jwt.JwtUtil;
 import com.cjh.news_subscription_api.refresh.service.RefreshTokenService;
 import com.cjh.news_subscription_api.user.entity.Role;
@@ -71,6 +69,41 @@ public class AuthService {
         refreshTokenService.save(user.getId(), refreshToken);
 
         // 5. AccessToken 포함 하는 로그인 Dto 생성 후 반환
-        return new LoginResponseDto(accessToken);
+        return new LoginResponseDto(accessToken, refreshToken);
+    }
+
+    /**
+     * JWT 기반 리프레시 토큰을 검증, 새로운 액세스 토큰을 발급하는 로직
+     */
+    @Transactional
+    public RefreshTokenResponseDto refreshAccessToken(String refreshToken) {
+
+        // 1. 토큰 유효성 검사
+        if(!jwtUtil.ValidateToken(refreshToken)) {
+            throw new IllegalArgumentException("유효하지 않은 Refresh Token 입니다.");
+        }
+
+        // 2. 토큰에서 이메일 추출(JWT claim 에서 사용자 식별 정보 추출)
+        String email = jwtUtil.extractEmail(refreshToken);
+
+        // 3. 사용자 조회(DB 조회)
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(()-> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        // 4. Redis의 Refresh Token과 비교
+        String storedRefreshToken = refreshTokenService.getToken(user.getId());
+        if(!refreshToken.equals(storedRefreshToken)) {
+            throw new IllegalArgumentException("Refresh Token이 일치하지 않습니다.");
+        }
+
+        // 5. 새로운 Access, Refresh Token 발급
+        String newAccessToken = jwtUtil.createAccessToken(email);
+        String newRefreshToken = jwtUtil.createRefreshToken(email);
+
+        // 6. Redis에 새 Refresh Token 저장
+        refreshTokenService.save(user.getId(), newRefreshToken);
+
+        // 7. 반환
+        return new RefreshTokenResponseDto(newAccessToken, newRefreshToken);
     }
 }
