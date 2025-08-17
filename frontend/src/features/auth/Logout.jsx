@@ -1,7 +1,9 @@
 import axiosInstance from "../../api/axiosInstance.js";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../auth/useAuth.js";
 
-function Logout({onLogoutSuccess}) {
+function Logout() {
+    const { logout } = useAuth();
     const navigate = useNavigate();
 
     // 로그아웃 처리
@@ -12,14 +14,7 @@ function Logout({onLogoutSuccess}) {
         } catch (err) {
             console.error("로그아웃 실패",err);
         } finally {
-            // 로컬 accessToken 삭제
-            localStorage.removeItem('accessToken');
-
-            // axios 기본 Authorization 헤더 제거
-            delete axiosInstance.defaults.headers.Authorization;
-
-            // 상위 컴포넌트에 로그아웃 완료 알림
-            onLogoutSuccess();
+            logout();
 
             // 로그인 페이지로 이동
             navigate('/login');
