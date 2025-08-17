@@ -1,11 +1,13 @@
 import {useState} from "react";
 import axiosInstance from "../../api/axiosInstance.js";
+import {useNavigate} from "react-router-dom";
 
 function Login( onLoginSuccess ) {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const navigate = useNavigate(); // 리다이렉션 용도
 
     // 로그인 폼 제출
     const handleSubmit = async (e) => {
@@ -30,6 +32,8 @@ function Login( onLoginSuccess ) {
 
             // 로그인 성공 시 상위 컴포넌트에 알림
             onLoginSuccess();
+            // 로그인 성공 → 내 프로필로 이동
+            navigate('/profile');
 
         } catch (err) {
             setMessage(err.response?.data?.message || '로그인 실패');
