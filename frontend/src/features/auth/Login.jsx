@@ -1,12 +1,14 @@
 import {useState} from "react";
 import axiosInstance from "../../api/axiosInstance.js";
 import {useNavigate} from "react-router-dom";
+import {useAuth} from "../../auth/useAuth.js";
 
-function Login( onLoginSuccess ) {
+function Login() {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [message, setMessage] = useState('');
+    const { login } = useAuth();
     const navigate = useNavigate(); // 리다이렉션 용도
 
     // 로그인 폼 제출
@@ -23,15 +25,9 @@ function Login( onLoginSuccess ) {
             // 응답에서 access 토큰 추출
             const { accessToken } = res.data.data;
 
-            // accessToken LocalStorage에 저장 (임시 클라이언트 보관용)
-            localStorage.setItem('accessToken', accessToken);
+            // useAuth의 login() 사용
+            login(accessToken);
 
-            // axios 기본 헤더에 토큰 설정 (재요청 시 자동 포함)
-            // --로그인 직후 바로 다른 요청으로 인터셉터 비활성화시 임시용임--
-            axiosInstance.defaults.headers.Authorization = `Bearer ${accessToken}`;
-
-            // 로그인 성공 시 상위 컴포넌트에 알림
-            onLoginSuccess();
             // 로그인 성공 → 내 프로필로 이동
             navigate('/profile');
 
