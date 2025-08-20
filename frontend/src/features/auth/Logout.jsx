@@ -1,6 +1,6 @@
 import axiosInstance from "../../api/axiosInstance.js";
 import {useNavigate} from "react-router-dom";
-import {useAuth} from "../../auth/useAuth.js";
+import {useAuth} from "../../auth/useAuth.jsx";
 
 function Logout() {
     const { logout } = useAuth();

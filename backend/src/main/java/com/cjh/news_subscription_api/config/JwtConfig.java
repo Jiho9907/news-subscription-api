@@ -2,10 +2,12 @@
 package com.cjh.news_subscription_api.config;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 
 @Getter
+@Setter
 @Configuration
 @ConfigurationProperties(prefix = "jwt")
 // application.yml 에서 "jwt"로 시작하는 프로퍼티들을 이 클래스 필드에 바인딩

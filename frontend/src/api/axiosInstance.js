@@ -3,7 +3,7 @@ import axios from "axios";
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
     // 백엔드 API 기본 주소 설정
-    baseURL: process.env.REACT_APP_API_URL,
+    baseURL: '/',
     // 브라우저가 HttpOnly RefreshToken 자동 저장/포함하여 백엔드로 보내도록 허용
     withCredentials: true,
 });
@@ -15,7 +15,12 @@ axiosInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem('accessToken');
 
     // 모든 요청에 Authorization 헤더로 JWT 자동 포함
-    if(token) {
+    // /auth/login 또는 /auth/refresh 요청에는 Authorization 헤더를 붙이지 않음
+    if (
+        token &&
+        !config.url.includes('/auth/login') &&
+        !config.url.includes('/auth/refresh')
+    ) {
         config.headers.Authorization = `Bearer ${token}`;
     }
 
@@ -38,7 +43,7 @@ axiosInstance.interceptors.response.use(
             try {
                 // refreshToken 기반으로 새 accessToken 발급 요청
                 const res = await axios.post(
-                    `${process.env.REACT_APP_API_URL}/auth/refresh`,
+                    `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
                     {},
                     { withCredentials: true }
                 );

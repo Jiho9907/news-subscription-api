@@ -1,6 +1,5 @@
 import {useEffect, useState} from "react";
 import axiosInstance from "../../api/axiosInstance.js";
-import {get} from "axios";
 
 function MyProfile() {
     const [user, setUser] = useState(null);
