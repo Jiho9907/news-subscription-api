@@ -1,11 +1,13 @@
 import React from 'react';
 import Login from "../features/auth/Login.jsx";
+import {useNavigate} from "react-router-dom";
 
 function LoginPage() {
+    const navigate = useNavigate();
     return (
         <div>
             <h1>로그인</h1>
-            <Login onLoginSuccess={() => window.location.href = '/profile'} />
+            <Login onLoginSuccess={() => navigate('/profile')} />
         </div>
     );
 }

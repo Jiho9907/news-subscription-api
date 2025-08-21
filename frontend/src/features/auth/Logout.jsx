@@ -19,8 +19,7 @@ function Logout() {
             // 로그인 페이지로 이동
             navigate('/login');
         }
-
-        return <button onClick={handleLogout}>로그아웃</button>
     }
+    return <button onClick={handleLogout}>로그아웃</button>
 }
 export default Logout;

@@ -1,10 +1,14 @@
 import {useEffect, useState} from "react";
 import axiosInstance from "../../api/axiosInstance.js";
+import {useAuth} from "../../auth/useAuth.jsx";
 
 function MyProfile() {
     const [user, setUser] = useState(null);
+    const { isAuthLoading, isLoggedIn } = useAuth();
 
     useEffect(() => {
+        if(isAuthLoading || !isLoggedIn)  return; // 아직 로딩 중이거나 로그인 안됨
+
         (async () => {
             try {
                 const res = await axiosInstance.get('/user/me');
@@ -13,8 +17,9 @@ function MyProfile() {
                 console.log("프로필 조회 실패", err);
             }
         })();
-    },[])
+    },[isAuthLoading, isLoggedIn]);
 
+    if(isAuthLoading)  return <p>인증 확인 중...</p>;
     if (!user) return <p>로딩중...</p>;
 
     return (

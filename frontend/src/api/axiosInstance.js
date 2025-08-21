@@ -3,9 +3,12 @@ import axios from "axios";
 // Axios 인스턴스 생성
 const axiosInstance = axios.create({
     // 백엔드 API 기본 주소 설정
-    baseURL: '/',
+    baseURL: import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api',
     // 브라우저가 HttpOnly RefreshToken 자동 저장/포함하여 백엔드로 보내도록 허용
     withCredentials: true,
+    headers: {
+        'Content-Type' : 'application/json',
+    }
 });
 
 

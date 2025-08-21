@@ -7,7 +7,7 @@ function ProfilePage() {
         <div>
             <h1>내 프로필</h1>
             <MyProfile />
-            <Logout onLogoutSuccess={() => window.location.href = '/login'} />
+            <Logout />
         </div>
     );
 }
