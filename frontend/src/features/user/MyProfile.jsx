@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import axiosInstance from "../../api/axiosInstance.js";
 import {useAuth} from "../../auth/useAuth.jsx";
+import './MyProfile.css'
 
 function MyProfile() {
     const [user, setUser] = useState(null);
@@ -23,13 +24,13 @@ function MyProfile() {
     if (!user) return <p>로딩중...</p>;
 
     return (
-        <div>
+        <div className={"profile-container"}>
             <h2>내 정보</h2>
-            <p>ID: {user.id}</p>
-            <p>이메일: {user.email}</p>
-            <p>닉네임: {user.nickname}</p>
-            <p>가입방식: {user.provider}</p>
-            <p>역할: {user.role}</p>
+            <p><strong>ID: </strong>{user.id}</p>
+            <p><strong>이메일:</strong> {user.email}</p>
+            <p><strong>닉네임: </strong>{user.nickname}</p>
+            <p><strong>가입방식:</strong> {user.provider}</p>
+            <p><strong>역할:</strong> {user.role}</p>
         </div>
     )
 }

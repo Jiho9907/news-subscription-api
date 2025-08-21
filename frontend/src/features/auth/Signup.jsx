@@ -1,5 +1,6 @@
 import {useState} from "react";
 import axiosInstance from "../../api/axiosInstance.js";
+import './Signup.css'
 
 function Signup() {
 
@@ -33,7 +34,7 @@ function Signup() {
     }
 
     return (
-        <div>
+        <div className={"signup-container"}>
             <h2>회원가입</h2>
             {/* 회원가입 폼 */}
             <form onSubmit={handleSubmit}>

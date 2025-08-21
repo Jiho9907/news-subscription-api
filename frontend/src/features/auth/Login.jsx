@@ -2,6 +2,7 @@ import {useState} from "react";
 import axiosInstance from "../../api/axiosInstance.js";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../auth/useAuth.jsx";
+import './Login.css'
 
 function Login() {
 
@@ -37,7 +38,7 @@ function Login() {
     };
 
     return (
-        <div>
+        <div className={"login-container"}>
             <h2>로그인</h2>
 
             <form onSubmit={handleSubmit}>

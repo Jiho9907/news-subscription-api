@@ -4,6 +4,7 @@ import LoginPage from "../pages/LoginPage.jsx";
 import SignupPage from "../pages/SignupPage.jsx";
 import ProfilePage from "../pages/ProfilePage.jsx";
 import PublicRoute from "../auth/PublicRoute.jsx";
+import '../styles/global.css'
 
 function AppRouter() {
     return (

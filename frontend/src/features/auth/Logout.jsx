@@ -1,6 +1,7 @@
 import axiosInstance from "../../api/axiosInstance.js";
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../../auth/useAuth.jsx";
+import './Logout.css'
 
 function Logout() {
     const { logout } = useAuth();
@@ -20,6 +21,6 @@ function Logout() {
             navigate('/login');
         }
     }
-    return <button onClick={handleLogout}>로그아웃</button>
+    return <button className={"logout-button"} onClick={handleLogout}>로그아웃</button>
 }
 export default Logout;
