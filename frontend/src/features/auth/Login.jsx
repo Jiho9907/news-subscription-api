@@ -60,6 +60,16 @@ function Login() {
             </form>
             {/* 실패 메시지 출력 */}
             {message && <p>{message}</p>}
+            <button
+                className="google-login-button"
+                onClick={() => {
+                    // 백엔드에서 OAuth2 요청 시작
+                    window.location.href = 'http://localhost:8080/api/oauth2/authorization/google';
+                }}
+            >
+                <img src="../../../public/google-logo.png" alt="Google Logo" />
+                <span className="button-text">구글로 로그인</span>
+            </button>
         </div>
     )
 }
