@@ -5,6 +5,7 @@ import SignupPage from "../pages/SignupPage.jsx";
 import ProfilePage from "../pages/ProfilePage.jsx";
 import PublicRoute from "../auth/PublicRoute.jsx";
 import '../styles/global.css'
+import OAuth2RedirectPage from "../pages/OAuth2RedirectPage.js";
 
 function AppRouter() {
     return (
@@ -23,6 +24,8 @@ function AppRouter() {
                 </PublicRoute>
             } />
 
+            <Route path="/oauth2/redirect" element={<OAuth2RedirectPage />} />
+            
             {/* 로그인 사용자 페이지 */}
             <Route
                 path="/profile"
