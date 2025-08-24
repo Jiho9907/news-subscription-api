@@ -4,6 +4,7 @@
 package com.cjh.news_subscription_api.config;
 
 import com.cjh.news_subscription_api.auth.jwt.JwtAuthenticationFilter;
+import com.cjh.news_subscription_api.auth.oauth.CustomAuthorizationRequestResolver;
 import com.cjh.news_subscription_api.auth.oauth.CustomOAuth2UserService;
 import com.cjh.news_subscription_api.auth.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
@@ -31,7 +34,7 @@ public class SecurityConfig {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomOAuth2UserService customOAuth2UserService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-
+    private final ClientRegistrationRepository clientRegistrationRepository;
     /**
      * 시큐리티 필터와 인증 정책을 정의
      * @param http
@@ -39,6 +42,10 @@ public class SecurityConfig {
      */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+
+        // 커스텀 AuthorizationRequestResolver 등록
+        OAuth2AuthorizationRequestResolver customAuthorizationRequestResolver =
+                new CustomAuthorizationRequestResolver(clientRegistrationRepository, "/oauth2/authorization");
         http
                 .cors(Customizer.withDefaults()) // 아래 corsConfigurationSource()와 연동
                 .csrf(csrf -> csrf.disable()) // CSRF 비활 (CSRF: 웹에서 세션 기반 인증일 때 공격을 막기 위한 보호 기능)
@@ -49,6 +56,11 @@ public class SecurityConfig {
                         .anyRequest().authenticated() // 그 외 요청은 인증(JWT 토큰)필요
                 )
                 .oauth2Login(oauth -> oauth
+                        .authorizationEndpoint(authorization -> authorization
+                                .authorizationRequestResolver(customAuthorizationRequestResolver)
+                        )
+                        .redirectionEndpoint(endpoint ->
+                                endpoint.baseUri("/api/auth/google/callback")) // 커스텀 리디렉션 URI 사용
                         .userInfoEndpoint(userInfo -> userInfo
                                 .userService(customOAuth2UserService))
                         .successHandler(oAuth2SuccessHandler) // OAuth2 로그인 성공 시 실행
