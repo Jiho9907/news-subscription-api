@@ -3,12 +3,14 @@ package com.cjh.news_subscription_api.auth.oauth;
 import com.cjh.news_subscription_api.auth.jwt.JwtUtil;
 import com.cjh.news_subscription_api.refresh.service.RefreshTokenService;
 import com.cjh.news_subscription_api.user.entity.User;
+import com.cjh.news_subscription_api.user.repository.UserRepository;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -24,14 +26,21 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
+    private final UserRepository userRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication)
             throws IOException, ServletException {
+        DefaultOAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
 
-        User user = (User) authentication.getPrincipal();
+        // 구글 사용자 정보에서 이메일 추출
+        String email = oAuth2User.getAttribute("email");
+
+        // DB에서 User 엔티티 조회
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("유저를 찾을 수 없습니다."));
 
         // 1. JWT 발급
         String accessToken = jwtUtil.createAccessToken(user.getEmail());
