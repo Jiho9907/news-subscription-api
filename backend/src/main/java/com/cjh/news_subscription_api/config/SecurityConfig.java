@@ -4,6 +4,8 @@
 package com.cjh.news_subscription_api.config;
 
 import com.cjh.news_subscription_api.auth.jwt.JwtAuthenticationFilter;
+import com.cjh.news_subscription_api.auth.oauth.CustomOAuth2UserService;
+import com.cjh.news_subscription_api.auth.oauth.OAuth2SuccessHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,8 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final CustomOAuth2UserService customOAuth2UserService;
+    private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     /**
      * 시큐리티 필터와 인증 정책을 정의
@@ -43,6 +47,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll() // /api/auth/** → 로그인, 회원가입 등은 인증 없이 접근 가능하게 허용
                         .anyRequest().authenticated() // 그 외 요청은 인증(JWT 토큰)필요
+                )
+                .oauth2Login(oauth -> oauth
+                        .userInfoEndpoint(userInfo -> userInfo
+                                .userService(customOAuth2UserService))
+                        .successHandler(oAuth2SuccessHandler) // OAuth2 로그인 성공 시 실행
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); //사용자의 JWT 토큰을 검사하는 커스텀 필터(기존 로그인 필터보다 먼저 토큰을 체크)
         return http.build();
