@@ -3,20 +3,16 @@ package com.cjh.news_subscription_api.auth.oauth;
 import com.cjh.news_subscription_api.auth.jwt.JwtUtil;
 import com.cjh.news_subscription_api.refresh.service.RefreshTokenService;
 import com.cjh.news_subscription_api.user.entity.User;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * OAuth2 로그인 성공 시 호출되는 핸들러
@@ -28,7 +24,6 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final JwtUtil jwtUtil;
     private final RefreshTokenService refreshTokenService;
-    private final ObjectMapper objectMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -36,31 +31,25 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
                                         Authentication authentication)
             throws IOException, ServletException {
 
-        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-        String email = userDetails.getUsername();
+        User user = (User) authentication.getPrincipal();
 
-        // JWT 생성
-        String accessToken = jwtUtil.createAccessToken(email);
-        String refreshToken = jwtUtil.createRefreshToken(email);
+        // 1. JWT 발급
+        String accessToken = jwtUtil.createAccessToken(user.getEmail());
+        String refreshToken = jwtUtil.createRefreshToken(user.getEmail());
 
-        // Refresh 토큰 저장
-        User user = (User) userDetails;
+        // 2. 리프레시 토큰 DB 저장
         refreshTokenService.save(user.getId(), refreshToken);
 
-        // Refresh Token은 HttpOnly 쿠키로 저장
+        // 3. 리프레시 토큰을 HttpOnly 쿠키로 클라이언트에 전달
         Cookie refreshCookie = new Cookie("refreshToken", refreshToken);
         refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(true); // HTTPS 환경이라면 반드시 true
         refreshCookie.setPath("/");
         refreshCookie.setMaxAge(60 * 60 * 24 * 7); // 7일
-
         response.addCookie(refreshCookie);
 
-        // 액세스 토큰은 JSON으로 반환
-        response.setContentType("application/json");
-        response.setCharacterEncoding("utf-8");
-
-        Map<String, String> tokenResponse = new HashMap<>();
-        tokenResponse.put("accessToken", accessToken);
-        objectMapper.writeValue(response.getWriter(), tokenResponse);
+        // 4. accessToken을 URL로 넘겨서 리디렉트
+        String redirectUrl = "http://localhost:5173/oauth2/redirect?accessToken=" + accessToken;
+        response.sendRedirect(redirectUrl);;
     }
 }
