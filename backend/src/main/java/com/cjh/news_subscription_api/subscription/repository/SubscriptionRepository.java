@@ -13,4 +13,6 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, Long
 
     // 유저 + 키워드 조합으로 중복 방지
     boolean existsByUserAndKeyword(User user, String keyword);
+
+    List<Subscription> findByUserId(Long userId);
 }

@@ -66,3 +66,8 @@ jwt:
 
 server:
   port: 8080
+
+naver:
+  client-id: 0iHGHJzHTQx8yvCjKN40
+  client-secret: 1A86Qz7R2S
+  api-url: https://openapi.naver.com/v1/search/news.json
