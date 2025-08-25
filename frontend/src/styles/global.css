@@ -26,6 +26,12 @@ body {
 
 button {
     cursor: pointer;
+    padding: 0.5rem 1rem;
+    color: white;
+    border: none;
+    border-radius: var(--border-radius);
+    font-weight: bold;
+    background: var(--primary-color);
 }
 
 input, button {
@@ -33,6 +39,9 @@ input, button {
     font-family: inherit;
 }
 
+button:hover {
+    background-color: var(--accent-color);
+}
 h1 {
     font-family: 'Noto Sans KR', sans-serif;
     color: var(--primary-color);

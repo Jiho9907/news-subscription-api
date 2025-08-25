@@ -8,7 +8,7 @@ function NewsPage() {
 
     return (
         <div>
-            <h1>맞춤 뉴스</h1>
+            <h1>나만의 뉴스</h1>
 
             {/* 키워드 선택 컴포넌트 */}
             <KeywordSelector onKeywordChange={setKeywords} />

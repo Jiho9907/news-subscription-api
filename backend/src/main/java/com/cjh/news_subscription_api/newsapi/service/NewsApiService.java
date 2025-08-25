@@ -25,7 +25,7 @@ public class NewsApiService {
         String uri = UriComponentsBuilder
                 .fromHttpUrl(naverNewsApiConfig.getApiUrl())
                 .queryParam("query", keyword)
-                .queryParam("display", 5)
+                .queryParam("display", 9)
                 .queryParam("sort","date") //최신순
                 .build()
                 .toUriString();
@@ -37,6 +37,7 @@ public class NewsApiService {
         HttpEntity<String> request = new HttpEntity<>(headers);
 
         try{
+            // 기사 내용 받아오기
             ResponseEntity<Map> response = restTemplate.exchange(uri, HttpMethod.GET, request, Map.class);
             List<Map<String, String>> items = (List<Map<String, String>>) response.getBody().get("items");
             return items;

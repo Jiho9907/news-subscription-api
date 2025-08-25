@@ -1,15 +1,12 @@
 import {useEffect, useState} from "react";
 import axiosInstance from "../../api/axiosInstance.js";
-import Select from 'react-select';
+import './KeywordSelector.css';
 
 const OPTIONS = [
-    "경제",
-    "정치",
-    "스포츠",
-    "AI",
-    "테크",
-    "연예",
-    "건강",
+    "정치", "경제", "사회", "스포츠", "연예",
+    "AI", "테크", "게임", "부동산", "주식",
+    "환경", "건강", "음식", "여행", "교육",
+    "스타트업", "음악", "날씨", "반도체", "로봇"
 ];
 
 function KeywordSelector({ onKeywordChange }) {
@@ -51,27 +48,24 @@ function KeywordSelector({ onKeywordChange }) {
     };
 
     return (
-        <div>
-            <h3>관심 키워드를 선택하세요</h3>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", marginBottom: "12px" }}>
+        <div className="keyword-selector">
+            <h4>관심 키워드를 선택하세요</h4>
+            <div className="keyword-buttons">
                 {OPTIONS.map(keyword => (
                     <button
                         key={keyword}
                         onClick={() => toggleKeyword(keyword)}
-                        style={{
-                            padding: "6px 12px",
-                            borderRadius: "20px",
-                            border: selectedKeywords.includes(keyword) ? "2px solid #007bff" : "1px solid #ccc",
-                            backgroundColor: selectedKeywords.includes(keyword) ? "#e7f1ff" : "#fff",
-                            cursor: "pointer",
-                        }}
+                        className={`keyword-button ${selectedKeywords.includes(keyword) ? 'selected' : ''}`}
                         type="button"
                     >
                         {keyword}
                     </button>
                 ))}
             </div>
-            <button onClick={handleSave} disabled={selectedKeywords.length === 0}>
+            <button
+                className="save-button"
+                onClick={handleSave}
+                disabled={selectedKeywords.length === 0}>
                 저장
             </button>
         </div>
