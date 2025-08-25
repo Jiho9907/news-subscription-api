@@ -12,9 +12,14 @@ import {useAuth} from "../auth/useAuth.jsx";
 function AppRouter() {
     const { isLoggedIn } = useAuth();
 
+    // 아직 로그인 여부 판단 중이라면 로딩 중 상태 반환 (optional)
+    if (isLoggedIn === null) {
+        return <div>로딩 중...</div>;
+    }
+
     return (
         <Routes>
-            {/* 루트 경로: 로그인 상태 따라 분기 */}
+            {/* 로그인 상태에 따라 "/" 경로 분기 */}
             <Route path="/" element={
                 isLoggedIn ? <Navigate to="/news" /> : <Navigate to="/login" />
             } />
