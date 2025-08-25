@@ -1,6 +1,7 @@
 package com.cjh.news_subscription_api.subscription.controller;
 
 import com.cjh.news_subscription_api.common.response.ApiResponse;
+import com.cjh.news_subscription_api.common.response.ErrorResponse;
 import com.cjh.news_subscription_api.subscription.dto.SubscriptionRequestDto;
 import com.cjh.news_subscription_api.subscription.entity.Subscription;
 import com.cjh.news_subscription_api.subscription.service.SubscriptionService;
@@ -27,9 +28,13 @@ public class SubscriptionController {
     }
 
     // 키워드 목록 조회
-    @GetMapping
+    @GetMapping("/keywords")
     public ApiResponse<List<Subscription>> getUserSubscription(
+//    public ApiResponse<?> getUserSubscription(
             @AuthenticationPrincipal User user) {
+//        if (user == null) {
+//            return ApiResponse.failure("인증이 필요합니다.");
+//        }
         List<Subscription> list = subscriptionService.getUserSubscriptions(user.getId());
         return ApiResponse.success(list);
     }

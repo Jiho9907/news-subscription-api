@@ -32,12 +32,6 @@ public class Subscription {
     @Column(nullable = false)
     private String keyword;
 
-    // 뉴스 카테고리 (선택, 예: "technology", "business")
-    private String category;
-
-    // 뉴스 제공자 (선택, 예: "naver", "newsapi")
-    private String source;
-
     private LocalDateTime createdAt;
 
     @PrePersist

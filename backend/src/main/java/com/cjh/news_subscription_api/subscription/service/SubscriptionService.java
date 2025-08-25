@@ -9,7 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -26,18 +29,23 @@ public class SubscriptionService {
         User user = userRepository.findById(userId)
                 .orElseThrow(()-> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
 
-        boolean exists = subscriptionRepository.existsByUserAndKeyword(user, dto.getKeyword());
-        if (exists) {
-            throw new IllegalStateException("이미 등록된 키워드입니다.");
-        }
-        Subscription subscription = Subscription.builder()
-                .user(user)
-                .keyword(dto.getKeyword())
-                .category(dto.getCategory())
-                .source(dto.getSource())
-                .build();
+        // 기존 구독 키워드 모두 삭제 (전체 초기화 방식)
+        List<Subscription> existingSubscriptions = subscriptionRepository.findByUser(user);
+        subscriptionRepository.deleteAll(existingSubscriptions);
 
-        subscriptionRepository.save(subscription);
+        // 중복 방지를 위해 Set으로 처리
+        Set<String> uniqueKeywords = new HashSet<>(dto.getKeywords());
+
+        List<Subscription> newSubscriptions = uniqueKeywords.stream()
+                .map(keyword -> Subscription.builder()
+                        .user(user)
+                        .keyword(keyword)
+//                        .category(dto.getCategory())
+//                        .source(dto.getSource())
+                        .build())
+                .collect(Collectors.toList());
+
+        subscriptionRepository.saveAll(newSubscriptions);
     }
 
     /**
