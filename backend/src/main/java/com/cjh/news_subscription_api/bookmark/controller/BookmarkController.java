@@ -1,6 +1,7 @@
 package com.cjh.news_subscription_api.bookmark.controller;
 
 import com.cjh.news_subscription_api.bookmark.dto.BookmarkRequestDto;
+import com.cjh.news_subscription_api.bookmark.dto.BookmarkResponseDto;
 import com.cjh.news_subscription_api.bookmark.entity.Bookmark;
 import com.cjh.news_subscription_api.bookmark.service.BookmarkService;
 import com.cjh.news_subscription_api.common.response.ApiResponse;
@@ -25,7 +26,7 @@ public class BookmarkController {
         return ApiResponse.success("찜 상태가 변경되었습니다.");
     }
 
-    // 내가 찜한 뉴스 목록 조회
+    // 찜한 뉴스 url 목록 조회
     @GetMapping("/urls")
     public ApiResponse<List<String>> getBookmarkUrls(@AuthenticationPrincipal User user) {
         List<String> urls = bookmarkService.getUserBookmarks(user.getId())
@@ -34,4 +35,17 @@ public class BookmarkController {
                 .toList();
         return ApiResponse.success(urls);
     }
+
+    // 찜한 뉴스 목록 조회
+    @GetMapping("/list")
+    public ApiResponse<List<BookmarkResponseDto>> getUserBookmarks(@AuthenticationPrincipal User user) {
+        List<Bookmark> bookmarks = bookmarkService.getUserBookmarks(user.getId());
+
+        List<BookmarkResponseDto> result = bookmarks.stream()
+                .map(BookmarkResponseDto::from)
+                .toList();
+
+        return ApiResponse.success(result);
+    }
+
 }
