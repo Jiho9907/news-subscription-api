@@ -17,7 +17,11 @@ public class BookmarkService {
     // 이미 찜한 뉴스면 삭제하고 아니면 저장(toggle)
     public void toggleBookmark(User user, String title, String url, String description, String pubDate) {
         if(bookmarkRepository.existsByUserIdAndUrl(user.getId(), url)) {
-            bookmarkRepository.deleteByUserIdAndUrl(user.getId(), url);
+
+            long deletedCount = bookmarkRepository.deleteByUserIdAndUrl(user.getId(), url);
+            if (deletedCount == 0) {
+                throw new IllegalStateException("삭제할 찜이 없습니다.");
+            }
         } else {
             Bookmark bookmark = new Bookmark(user, title, url, description, pubDate);
             bookmarkRepository.save(bookmark);

@@ -16,11 +16,11 @@ function ProfilePage() {
             <h1>내 프로필</h1>
             <MyProfile />
 
-            <hr style={{ margin: "2rem 0" }} />
-
             <button onClick={goToNews}>
                 뉴스 페이지로 이동
             </button>
+
+            <hr style={{ margin: "2rem 0" }} />
             <BookmarkList />
             <Logout />
         </div>

@@ -2,10 +2,15 @@
     padding: 2rem;
 }
 
+.bookmark-page h2 {
+    margin-bottom: 1rem;
+}
+
 .bookmark-list {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     gap: 1.5rem;
+    justify-content: center;
 }
 
 .bookmark-card {
