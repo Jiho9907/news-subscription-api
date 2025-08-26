@@ -12,6 +12,7 @@ function truncateHTML(htmlString, maxLength) {
 const RecommendedNews = ({ keywords }) => {
     const [newsMap, setNewsMap] = useState({});
     const [slideIndexMap, setSlideIndexMap] = useState({});
+    const [bookmarkedUrls, setBookmarkedUrls] = useState([]);
 
     useEffect(() => {
         if (!keywords || keywords.length === 0) {
@@ -34,7 +35,17 @@ const RecommendedNews = ({ keywords }) => {
             }
         };
 
+        const fetchBookmarks = async () => {
+            try {
+                const res = await axiosInstance.get("/bookmarks/urls");
+                setBookmarkedUrls(res.data.data); // [url1, url2, ...]
+            } catch (e) {
+                console.error("찜 목록 로딩 실패", e)
+            }
+        }
+
         fetchNews();
+        fetchBookmarks();
     }, [keywords]);
 
     const handleNextSlide = (keyword, totalLength) => {
@@ -58,6 +69,29 @@ const RecommendedNews = ({ keywords }) => {
             };
         });
     };
+
+    const handleBookmark = async (article) => {
+        const isBookmarked = bookmarkedUrls.includes(article.link);
+
+        try {
+            await axiosInstance.post("/bookmarks/toggle", {
+                title: article.title,
+                url: article.link,
+                description: article.description,
+                pubDate: article.pubDate
+            });
+
+            // toggle 결과에 따라 클라이언트 상태 업데이트
+            if (isBookmarked) {
+                setBookmarkedUrls(prev => prev.filter(url => url !== article.link));
+            } else {
+                setBookmarkedUrls(prev => [...prev, article.link]);
+            }
+        } catch (e) {
+            console.error("찜 처리 실패", e);
+        }
+    };
+
 
     if (!keywords || keywords.length === 0) {
         return <p>키워드를 먼저 선택해주세요.</p>
@@ -87,6 +121,12 @@ const RecommendedNews = ({ keywords }) => {
                                         </a>
                                         <p dangerouslySetInnerHTML={{ __html: truncateHTML(article.description, 150) }} />
                                         <small className="pub-date">발행일 : {new Date(article.pubDate).toLocaleString()}</small>
+                                        <button
+                                            className="bookmark-button"
+                                            onClick={() => handleBookmark(article)}
+                                        >
+                                            {isBookmarked ? "❤️" : "🤍"}
+                                        </button>
                                     </div>
                                 </div>
                             ))}
