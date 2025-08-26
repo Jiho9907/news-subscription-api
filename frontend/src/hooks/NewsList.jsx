@@ -8,10 +8,23 @@ function truncateHTML(htmlString, maxLength) {
     return text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 }
 
-const NewsList = ({ articles, bookmarkedUrls, handleBookmark, showSlider = false }) => {
-    const [slideIndex, setSlideIndex] = useState(0);
+const NewsList = ({
+                      articles,
+                      bookmarkedUrls,
+                      handleBookmark,
+                      showSlider = false,
+                      saveMemo,
+                      memos = {},
+                      showMemo = false,
+                      handleMemoChange,
+                      editingMemo = {},
+                      toggleEdit,
+                  }) => {
 
-    const visibleArticles = showSlider ? articles.slice(slideIndex, slideIndex + 3) : articles;
+    const [slideIndex, setSlideIndex] = useState(0);
+    const visibleArticles = showSlider
+        ? articles.slice(slideIndex, slideIndex + 3)
+        : articles;
 
     const handleNext = () => {
         const next = slideIndex + 3;
@@ -40,6 +53,8 @@ const NewsList = ({ articles, bookmarkedUrls, handleBookmark, showSlider = false
             {visibleArticles.map((article, idx) => {
                 const url = article.url || article.link;
                 const isBookmarked = bookmarkedUrls.includes(url);
+                const memoValue = memos[article.id] || '';
+                const isEditing = editingMemo[article.id];
 
                 return (
                     <div className="news-card" key={idx}>
@@ -57,6 +72,32 @@ const NewsList = ({ articles, bookmarkedUrls, handleBookmark, showSlider = false
                             >
                                 {isBookmarked ? "❤️" : "🤍"}
                             </button>
+
+                            {showMemo && (
+                                <div className="memo-section">
+                                    {isEditing ? (
+                                        <>
+                                            <textarea
+                                                value={memoValue}
+                                                onChange={e =>
+                                                    handleMemoChange(article.id, e.target.value)
+                                                }
+                                                placeholder="메모를 입력하세요"
+                                            />
+                                            <button onClick={() => saveMemo(article.id)}>저장</button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p style={{ whiteSpace: 'pre-wrap' }}>
+                                                {memoValue || '메모 없음'}
+                                            </p>
+                                            <button onClick={() => toggleEdit(article.id)}>
+                                                {memoValue ? '수정' : '작성'}
+                                            </button>
+                                        </>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 );

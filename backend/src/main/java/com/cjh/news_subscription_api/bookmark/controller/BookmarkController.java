@@ -7,10 +7,14 @@ import com.cjh.news_subscription_api.bookmark.service.BookmarkService;
 import com.cjh.news_subscription_api.common.response.ApiResponse;
 import com.cjh.news_subscription_api.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+        import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -46,6 +50,21 @@ public class BookmarkController {
                 .toList();
 
         return ApiResponse.success(result);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ApiResponse<?>> updateMemo(@PathVariable Long id,
+                                                     @AuthenticationPrincipal User user,
+                                                     @RequestBody Map<String, String> req) {
+        try {
+            bookmarkService.updateMemo(user.getId(), id, req.get("memo"));
+            return ResponseEntity.ok(ApiResponse.success("메모가 저장되었습니다."));
+        } catch (IllegalArgumentException | AccessDeniedException e) {
+            return ResponseEntity.badRequest().body(ApiResponse.failure(e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(ApiResponse.failure("서버 오류가 발생했습니다."));
+        }
     }
 
 }

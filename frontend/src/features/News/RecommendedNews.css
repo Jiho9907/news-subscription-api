@@ -78,3 +78,18 @@
 .bookmark-button:hover {
     background: none;
 }
+.memo-section {
+    margin-top: 1rem;
+}
+
+.memo-section textarea {
+    width: 100%;
+    min-height: 80px;
+    font-size: 0.9rem;
+    padding: 0.5rem;
+    resize: vertical;
+}
+
+.memo-section button {
+    margin-top: 0.5rem;
+}
