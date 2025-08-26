@@ -8,21 +8,22 @@ import '../styles/global.css'
 import OAuth2RedirectPage from "../pages/OAuth2RedirectPage.jsx";
 import NewsPage from "../pages/NewsPage.jsx";
 import {useAuth} from "../auth/useAuth.jsx";
+import RedirectHome from "../pages/RedirectHome.jsx";
 
 function AppRouter() {
-    const { isLoggedIn } = useAuth();
+    const { isAuthLoading  } = useAuth();
 
     // 아직 로그인 여부 판단 중이라면 로딩 중 상태 반환 (optional)
-    if (isLoggedIn === null) {
-        return <div>로딩 중...</div>;
+    // if (isLoggedIn === null) {
+    //     return <div>로딩 중...</div>;
+    // }
+    if (isAuthLoading) {
+        return <div>라우팅 중...</div>;
     }
-
     return (
         <Routes>
             {/* 로그인 상태에 따라 "/" 경로 분기 */}
-            <Route path="/" element={
-                isLoggedIn ? <Navigate to="/news" /> : <Navigate to="/login" />
-            } />
+            <Route path="/" element={<RedirectHome />} />
 
             {/* 비로그인 사용자 페이지 */}
             <Route path="/login" element={
@@ -55,8 +56,6 @@ function AppRouter() {
                     </ProtectedRoute>
                 }
             />
-
-            {/*  페이지 추가예정   */}
 
             {/* 정의되지 않은 경로는 홈으로 리디렉트 */}
             <Route path="*" element={<Navigate to="/" />} />

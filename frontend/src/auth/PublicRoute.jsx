@@ -2,10 +2,17 @@ import { Navigate } from "react-router-dom";
 import { useAuth } from "./useAuth.jsx";
 
 function PublicRoute({ children }) {
-    const { isLoggedIn } = useAuth();
+    const { isLoggedIn, isAuthLoading } = useAuth();
 
-    // 로그인되어 있다면 다른 곳으로 리다이렉션
-    return isLoggedIn ? <Navigate to="/profile" /> : children;
+    if (isAuthLoading) {
+        return <div>인증 상태 확인 중...</div>;
+    }
+
+    if (isLoggedIn) {
+        return <Navigate to="/news" />;
+    }
+
+    return children;
 }
 
 export default PublicRoute;

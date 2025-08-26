@@ -7,6 +7,7 @@ const AuthContext = createContext();
 // provider 컴포넌트
 export function AuthProvider({ children }) {
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isAuthLoading, setIsAuthLoading] = useState(true);
 
     // accessToken 저장 + axios 기본 헤더 설정
     const login = (token) => {
@@ -36,10 +37,11 @@ export function AuthProvider({ children }) {
             axiosInstance.defaults.headers.Authorization = `Bearer ${token}`;
             setIsLoggedIn(true);
         }
+        setIsAuthLoading(false);
     }, []);
     
     return (
-        <AuthContext.Provider value={{isLoggedIn, login, logout}}>
+        <AuthContext.Provider value={{isLoggedIn, login, logout, isAuthLoading }}>
             {children}
         </AuthContext.Provider>
     )

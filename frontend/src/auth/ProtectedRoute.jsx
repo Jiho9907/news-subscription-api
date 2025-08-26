@@ -5,7 +5,7 @@ function ProtectedRoute({ children }) {
     const { isLoggedIn, isAuthLoading } = useAuth();
 
     if (isAuthLoading) {
-        return <div>인증 상태 확인 중...</div>; // 또는 로딩 스피너
+        return <div>인증 상태 확인 중...</div>;
     }
 
     if (!isLoggedIn) {
